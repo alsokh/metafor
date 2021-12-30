@@ -939,12 +939,30 @@ lty, fonts, cex, cex.lab, cex.axis, annosym, ...) {
       }
 
       if (showweights) {
-         if (addfit && x$int.only) {
-            annotext <- cbind(c(unname(weights),100), annotext)
-         } else {
-            annotext <- cbind(unname(weights), annotext)
-         }
+      if (inherits(x, "rma.mv") && (x$p == 1)) {
+        if (is.null(x$W)) {
+          W1 <- chol2inv(chol(x$M))
+        }
+        else {
+          W1 <- x$W
+        }
+        wi <- rowSums(W1)
+        weight1 <- rep(NA_real_, x$k.f)
+        weight1[x$not.na] <- wi/sum(wi) * 100
+        if (addfit && x$int.only) {
+          annotext <- cbind(c(unname(rev(weight1)),100), annotext)
+        } else {
+          annotext <- cbind(unname(rev(weight1)), annotext)
+        }
+      } else {
+      if (addfit && x$int.only) {
+        annotext <- cbind(c(unname(weights), 100), annotext)
       }
+      else {
+        annotext <- cbind(unname(weights), annotext)
+      }
+      }
+    }
 
       annotext <- .fcf(annotext, digits[[1]])
       annotext <- sub("-", annosym[4], annotext, fixed=TRUE)
