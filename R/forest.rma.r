@@ -207,7 +207,10 @@ lty, fonts, cex, cex.lab, cex.axis, annosym, ...) {
    ### TODO: remove this when there is a weights() function for 'rma.uni.selmodel' objects
    if (inherits(x, "rma.uni.selmodel") && showweights)
       stop(mstyle$stop("Option 'showweights=TRUE' not possible for 'rma.uni.selmodel' objects."))
-
+   ### TODO: remove this when there is a weights() function for 'rma.mv' objects in case there is at least one moderator in the model
+   if(inherits(x, "rma.mv") && showweights && (x$p != 1))
+     stop(mstyle$stop("Option 'showweights=TRUE' not possible for 'rma.mv' model when there is at least one moderator in the model."))
+   
    if (!is.null(ddd$subset))
       stop(mstyle$stop("Function does not have a 'subset' argument."))
 
